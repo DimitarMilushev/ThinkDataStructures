@@ -44,8 +44,19 @@ public class MyArrayList<T> implements List<T> {
 
 	@Override
 	public boolean add(T element) {
-		// TODO: FILL THIS IN!
-		return false;
+		// Resize if needed
+		if (this.size >= array.length) {
+			resizeArray();
+		}
+		array[this.size] = element;
+		++this.size;
+		return true;
+	}
+	private void resizeArray() {
+		// Create new array with double the length.
+		T[] resized = (T[]) new Object[array.length * 2];
+		System.arraycopy(array, 0, resized, 0, array.length);
+		array = resized;
 	}
 
 	@Override
@@ -110,7 +121,13 @@ public class MyArrayList<T> implements List<T> {
 
 	@Override
 	public int indexOf(Object target) {
-		// TODO: FILL THIS IN!
+		// Do linear search O(n)
+		// Do not access NULL values (Call size instead of length)
+		for (int i = 0; i < this.size; i++) {
+			if (this.equals(array[i], target)) {
+				return i;
+			}
+		}
 		return -1;
 	}
 
@@ -181,8 +198,21 @@ public class MyArrayList<T> implements List<T> {
 
 	@Override
 	public T remove(int index) {
-		// TODO: FILL THIS IN!
-		return null;
+		if (index < 0 || index >= size) {
+			throw new IndexOutOfBoundsException();
+		}
+
+		T previous = array[index];
+		// Shift right-side elements to the left, erasing previous element
+		for (int i = index; i < this.size - 1 ; i++) {
+			array[i] = array[i + 1];
+		}
+		// Remove last element
+		array[this.size - 1] = null;
+
+		// Decrement size
+		--this.size;
+		return previous;
 	}
 
 	@Override
@@ -201,8 +231,12 @@ public class MyArrayList<T> implements List<T> {
 
 	@Override
 	public T set(int index, T element) {
-		// TODO: FILL THIS IN!
-		return null;
+		if (index < 0 || index >= size) {
+			throw new IndexOutOfBoundsException();
+		}
+		T previous = array[index];
+		array[index] = element;
+		return previous;
 	}
 
 	@Override
