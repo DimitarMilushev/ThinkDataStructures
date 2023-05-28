@@ -198,18 +198,13 @@ public class MyArrayList<T> implements List<T> {
 
 	@Override
 	public T remove(int index) {
-		if (index < 0 || index >= size) {
-			throw new IndexOutOfBoundsException();
-		}
-
-		T previous = array[index];
+		T previous = this.get(index);
 		// Shift right-side elements to the left, erasing previous element
 		for (int i = index; i < this.size - 1 ; i++) {
 			array[i] = array[i + 1];
 		}
 		// Remove last element
 		array[this.size - 1] = null;
-
 		// Decrement size
 		--this.size;
 		return previous;
@@ -231,10 +226,7 @@ public class MyArrayList<T> implements List<T> {
 
 	@Override
 	public T set(int index, T element) {
-		if (index < 0 || index >= size) {
-			throw new IndexOutOfBoundsException();
-		}
-		T previous = array[index];
+		T previous = this.get(index);
 		array[index] = element;
 		return previous;
 	}
