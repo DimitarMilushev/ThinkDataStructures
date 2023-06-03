@@ -82,7 +82,23 @@ public class MyLinkedList<E> implements List<E> {
 
 	@Override
 	public void add(int index, E element) {
-		//TODO: FILL THIS IN!
+		if (this.size < index || 0 > index) {
+			throw new IndexOutOfBoundsException();
+		}
+		// A point to the previous node is needed, because inserting a
+		// node requires that the previous node's next is equal to the newly added.
+		// 1. Find prev
+		// 3. Change prev.next with new Node, where (E, prev.next)
+		// 3.1 If NO prev, then change head
+		// 4. Increment size
+		if (index != 0) {
+			Node prev = this.getNode(index - 1);
+			prev.next = new Node(element, prev.next);
+		} else {
+			// Shift head one step
+			this.head = new Node(element, this.head);
+		}
+		this.size++;
 	}
 
 	@Override
@@ -143,7 +159,17 @@ public class MyLinkedList<E> implements List<E> {
 
 	@Override
 	public int indexOf(Object target) {
-		//TODO: FILL THIS IN!
+		Node node = this.head;
+		int index = 0;
+
+		while (node != null) {
+			if (this.equals(node.data, target)) {
+				return index;
+			}
+			node = node.next;
+			++index;
+		}
+
 		return -1;
 	}
 
@@ -208,8 +234,20 @@ public class MyLinkedList<E> implements List<E> {
 
 	@Override
 	public E remove(int index) {
-		//TODO: FILL THIS IN!
-		return null;
+		// 1. Find node
+		// 2. Get previous
+		// 3. Set previous next to node next
+		// 4. Decrement size
+		Node forRemoval = this.getNode(index);
+		// Size == 1, index == 0 - Remove head
+		if (index == 0) {
+			this.head = this.head.next;
+		} else {
+			Node prev = this.getNode(index - 1);
+			prev.next = forRemoval.next;
+		}
+		--size;
+		return forRemoval.data;
 	}
 
 	@Override
@@ -241,17 +279,15 @@ public class MyLinkedList<E> implements List<E> {
 
 	@Override
 	public List<E> subList(int fromIndex, int toIndex) {
-		if (fromIndex < 0 || toIndex >= size || fromIndex > toIndex) {
+		if (fromIndex > toIndex) {
 			throw new IndexOutOfBoundsException();
 		}
-		// TODO: classify this and improve it.
-		int i = 0;
+		Node node = this.getNode(fromIndex);
+		final Node lastElement = this.getNode(toIndex);
 		MyLinkedList<E> list = new MyLinkedList<E>();
-		for (Node node=head; node != null; node = node.next) {
-			if (i >= fromIndex && i <= toIndex) {
-				list.add(node.data);
-			}
-			i++;
+		while (!this.equals(node, lastElement)) {
+			list.add(node.data);
+			node = node.next;
 		}
 		return list;
 	}

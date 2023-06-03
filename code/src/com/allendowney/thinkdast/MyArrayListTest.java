@@ -52,6 +52,7 @@ public class MyArrayListTest {
 		for (int i = 4; i < 20; i++) {
 			mylist.add(i);
 		}
+
 		//System.out.println(Arrays.toString(mal.toArray()));
 		assertThat(mylist.get(18), is(new Integer(19)));
 	}
