@@ -13,9 +13,19 @@ import org.jsoup.select.Elements;
 
 
 public class WikiFetcher {
+	private static WikiFetcher instance;
 	private long lastRequestTime = -1;
 	private long minInterval = 1000;
 
+	public static WikiFetcher getInstance() {
+		if (instance == null) {
+			instance = new WikiFetcher();
+		}
+		return instance;
+	}
+	private WikiFetcher() {
+
+	}
 	/**
 	 * Fetches and parses a URL string, returning a list of paragraph elements.
 	 *
@@ -33,8 +43,9 @@ public class WikiFetcher {
 		// select the content text and pull out the paragraphs.
 		Element content = doc.getElementById("mw-content-text");
 
-		// TODO: avoid selecting paragraphs from sidebars and boxouts
-		Elements paras = content.select("p");
+		Elements paras = content.
+				select("p:not([style*=\"display: hidden\"]):not(.mw-empty-elt):not(.info-box)");
+
 		return paras;
 	}
 
@@ -86,9 +97,10 @@ public class WikiFetcher {
 	 * @throws IOException
 	 */
 	public static void main(String[] args) throws IOException {
-		WikiFetcher wf = new WikiFetcher();
+		WikiFetcher wf = WikiFetcher.getInstance()	;
 		String url = "https://en.wikipedia.org/wiki/Java_(programming_language)";
-		Elements paragraphs = wf.readWikipedia(url);
+
+		Elements paragraphs = wf.fetchWikipedia(url);
 
 		for (Element paragraph: paragraphs) {
 			System.out.println(paragraph);

@@ -92,7 +92,7 @@ public class Index {
      */
     public static void main(String[] args) throws IOException {
 
-        WikiFetcher wf = new WikiFetcher();
+        WikiFetcher wf = WikiFetcher.getInstance();
         Index indexer = new Index();
 
         String url = "https://en.wikipedia.org/wiki/Java_(programming_language)";

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.List;
+import java.util.function.Predicate;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -27,9 +28,13 @@ public class WikiNodeExample {
 		// select the content text and pull out the paragraphs.
 		Element content = doc.getElementById("mw-content-text");
 				
-		// TODO: avoid selecting paragraphs from sidebars and boxouts
-		Elements paras = content.select("p");
-		Element firstPara = paras.get(0);
+		// avoid selecting paragraphs from sidebars and boxouts
+		// Things to avoid:
+		//  info-box
+		//  mw-empty-elt
+		Elements paras = new Elements(content
+				.select("p:not([style*=\"display: hidden\"]):not(.mw-empty-elt):not(.info-box)"));
+		Element firstPara = paras.get(1);
 		
 		recursiveDFS(firstPara);
 		System.out.println();
@@ -44,6 +49,7 @@ public class WikiNodeExample {
 			}
 		}
 	}
+
 
 	private static void iterativeDFS(Node root) {
 		Deque<Node> stack = new ArrayDeque<Node>();

@@ -60,7 +60,7 @@ public class JedisTermCounter extends TermCounter {
 	public static void main(String[] args) throws IOException {
 		String url = "https://en.wikipedia.org/wiki/Java_(programming_language)";
 		
-		WikiFetcher wf = new WikiFetcher();
+		WikiFetcher wf = WikiFetcher.getInstance();
 		Elements paragraphs = wf.fetchWikipedia(url);
 		JedisTermCounter counter = new JedisTermCounter(url.toString());
 		counter.processElements(paragraphs);

@@ -24,7 +24,7 @@ public class WikiCrawler {
 	private Queue<String> queue = new LinkedList<String>();
 
 	// fetcher used to get pages from Wikipedia
-	final static WikiFetcher wf = new WikiFetcher();
+	final static WikiFetcher wf = WikiFetcher.getInstance();
 
 	/**
 	 * Constructor.

@@ -41,7 +41,7 @@ public class JedisIndexTest {
 	 * @throws IOException
 	 */
 	private static void loadIndex(JedisIndex index) throws IOException {
-		WikiFetcher wf = new WikiFetcher();
+		WikiFetcher wf = WikiFetcher.getInstance();
 
 		url1 = "https://en.wikipedia.org/wiki/Java_(programming_language)";
 		Elements paragraphs = wf.readWikipedia(url1);

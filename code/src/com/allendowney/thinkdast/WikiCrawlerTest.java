@@ -38,7 +38,7 @@ public class WikiCrawlerTest {
 		wc = new WikiCrawler(source, index);
 
 		// for testing purposes, load up the queue
-		WikiFetcher wf = new WikiFetcher();
+		WikiFetcher wf = WikiFetcher.getInstance();
 		Elements paragraphs = wf.readWikipedia(source);
 		wc.queueInternalLinks(paragraphs);
 	}

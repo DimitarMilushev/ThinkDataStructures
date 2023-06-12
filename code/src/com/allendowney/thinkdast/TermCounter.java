@@ -141,7 +141,7 @@ public class TermCounter {
 	public static void main(String[] args) throws IOException {
 		String url = "https://en.wikipedia.org/wiki/Java_(programming_language)";
 
-		WikiFetcher wf = new WikiFetcher();
+		WikiFetcher wf = WikiFetcher.getInstance();
 		Elements paragraphs = wf.fetchWikipedia(url);
 
 		TermCounter counter = new TermCounter(url.toString());
