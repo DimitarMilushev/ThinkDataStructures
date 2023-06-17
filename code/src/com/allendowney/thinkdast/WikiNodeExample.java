@@ -8,6 +8,7 @@ import java.util.Deque;
 import java.util.List;
 import java.util.function.Predicate;
 
+import com.allendowney.thinkdast.constants.CSSClassConstants;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -27,13 +28,12 @@ public class WikiNodeExample {
 		
 		// select the content text and pull out the paragraphs.
 		Element content = doc.getElementById("mw-content-text");
-				
-		// avoid selecting paragraphs from sidebars and boxouts
-		// Things to avoid:
-		//  info-box
-		//  mw-empty-elt
-		Elements paras = new Elements(content
-				.select("p:not([style*=\"display: hidden\"]):not(.mw-empty-elt):not(.info-box)"));
+
+		Elements paras = content.select(String.format(
+						"p:not([style*=\"%s0\"]):not(%s):not(%s)",
+						CSSClassConstants.HIDDEN_ELEMENT_STYLE,
+						CSSClassConstants.BOXOUT_CLASS,
+						CSSClassConstants.EMPTY_DIV_CLASS));
 		Element firstPara = paras.get(1);
 		
 		recursiveDFS(firstPara);

@@ -7,6 +7,7 @@ import static org.junit.Assert.*;
 
 import java.io.IOException;
 
+import com.allendowney.thinkdast.exceptions.DuplicateLinkException;
 import org.junit.Test;
 
 /**
@@ -30,6 +31,8 @@ public class WikiPhilosophyTest {
 		} catch (IOException e) {
 			e.printStackTrace();
 			fail();
+		} catch (DuplicateLinkException e) {
+			throw new RuntimeException(e);
 		}
 	}
 

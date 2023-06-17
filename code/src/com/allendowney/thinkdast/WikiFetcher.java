@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
+import com.allendowney.thinkdast.constants.CSSClassConstants;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -44,7 +45,12 @@ public class WikiFetcher {
 		Element content = doc.getElementById("mw-content-text");
 
 		Elements paras = content.
-				select("p:not([style*=\"display: hidden\"]):not(.mw-empty-elt):not(.info-box)");
+				select(String.format(
+						"p:not([style*=\"%s\"]):not(%s):not(%s):not(.sidebar p):not(.reference p)",
+						CSSClassConstants.HIDDEN_ELEMENT_STYLE,
+						CSSClassConstants.BOXOUT_CLASS,
+						CSSClassConstants.EMPTY_DIV_CLASS)
+				);
 
 		return paras;
 	}
