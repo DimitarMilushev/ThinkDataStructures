@@ -32,7 +32,7 @@ public class IndexTest {
 		paragraphs = wf.readWikipedia(url);
 		index.indexPage(url, paragraphs);
 		
-		// check the results: the word "occur" only appears on one page, twice
+		// check the results: the word "occur" only appears on one page, twice	
 		Set<TermCounter> set = index.get("occur");
 		assertThat(set.size(), is(1));
 		

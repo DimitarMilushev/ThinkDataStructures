@@ -3,6 +3,7 @@ package com.allendowney.thinkdast;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
 
 import com.allendowney.thinkdast.constants.CSSClassConstants;
@@ -63,7 +64,7 @@ public class WikiFetcher {
 	 * @throws IOException
 	 */
 	public Elements readWikipedia(String url) throws IOException {
-		URL realURL = new URL(url);
+		URL realURL = URI.create(url).toURL();
 
 		// assemble the file name
 		String slash = File.separator;
@@ -103,10 +104,10 @@ public class WikiFetcher {
 	 * @throws IOException
 	 */
 	public static void main(String[] args) throws IOException {
-		WikiFetcher wf = WikiFetcher.getInstance()	;
+		WikiFetcher wf = WikiFetcher.getInstance();
 		String url = "https://en.wikipedia.org/wiki/Java_(programming_language)";
 
-		Elements paragraphs = wf.fetchWikipedia(url);
+		Elements paragraphs = wf.readWikipedia(url);
 
 		for (Element paragraph: paragraphs) {
 			System.out.println(paragraph);

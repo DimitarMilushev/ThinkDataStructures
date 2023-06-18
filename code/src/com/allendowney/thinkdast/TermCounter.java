@@ -36,6 +36,7 @@ public class TermCounter {
 	 * @return
 	 */
 	public int size() {
+		if (map == null) return 0;
 		return map.values().stream().reduce(0, Integer::sum);
 	}
 
