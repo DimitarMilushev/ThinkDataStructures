@@ -30,7 +30,7 @@ public class WikiPhilosophy {
      */
     public static void main(String[] args) throws IOException, DuplicateLinkException {
         String destination = "https://en.wikipedia.org/wiki/Philosophy";
-        String source = "https://en.wikipedia.org/wiki/Arithmetic";
+        String source = "https://en.wikipedia.org/wiki/Java_(programming_language)";
 
         testConjecture(destination, source, 20);
     }

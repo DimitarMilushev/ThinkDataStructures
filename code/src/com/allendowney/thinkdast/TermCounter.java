@@ -36,8 +36,7 @@ public class TermCounter {
 	 * @return
 	 */
 	public int size() {
-		// TODO: FILL THIS IN!
-		return 0;
+		return map.values().stream().reduce(0, Integer::sum);
 	}
 
 	/**
@@ -144,7 +143,7 @@ public class TermCounter {
 		WikiFetcher wf = WikiFetcher.getInstance();
 		Elements paragraphs = wf.fetchWikipedia(url);
 
-		TermCounter counter = new TermCounter(url.toString());
+		TermCounter counter = new TermCounter(url);
 		counter.processElements(paragraphs);
 		counter.printCounts();
 	}
