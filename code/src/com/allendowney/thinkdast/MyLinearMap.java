@@ -63,7 +63,9 @@ public class MyLinearMap<K, V> implements Map<K, V> {
 	 * @param target
 	 */
 	private Entry findEntry(Object target) {
-		// TODO: FILL THIS IN!
+		for(Entry entry : this.entries) {
+			if (this.equals(entry.key, target)) return entry;
+		}
 		return null;
 	}
 
@@ -96,9 +98,24 @@ public class MyLinearMap<K, V> implements Map<K, V> {
 		throw new UnsupportedOperationException();
 	}
 
+	/**
+	 * Returns the value to which the specified key is mapped, or null if this map
+	 * contains no mapping for the key.
+	 * <p>
+	 * More formally, if this map contains a mapping from a key k to a value v such that
+	 * (key==null ? k==null : key.equals(k)), then this method returns v;
+	 * otherwise it returns null. (There can be at most one such mapping.)
+	 * <p>
+	 * If this map permits null values, then a return value of null does not necessarily indicate that the map contains no mapping for the key; it's also possible that the map explicitly maps the key to null.
+	 * The containsKey operation may be used to distinguish these two cases.
+	 *
+	 * @param key the key whose associated value is to be returned
+	 * @return the value to which the specified key is mapped, or null if this map contains no mapping for the key
+	 */
 	@Override
 	public V get(Object key) {
-		// TODO: FILL THIS IN!
+		Entry result = this.findEntry(key);
+		if (result != null) return result.value;
 		return null;
 	}
 
@@ -118,8 +135,16 @@ public class MyLinearMap<K, V> implements Map<K, V> {
 
 	@Override
 	public V put(K key, V value) {
-		// TODO: FILL THIS IN!
-		return null;
+		Entry item = this.findEntry(key);
+		V prev = null;
+		if (item != null) {
+			prev = item.value;
+			item.value = value;
+		} else {
+			entries.add(new Entry(key, value));
+		}
+
+		return prev; // the previous value associated with key, or null if there was no mapping for key.
 	}
 
 	@Override
@@ -129,9 +154,25 @@ public class MyLinearMap<K, V> implements Map<K, V> {
 		}
 	}
 
+	/**
+	 * Removes the mapping for a key from this map if it is present (optional operation). More formally, if this map contains a mapping from key k to value v such that (key==null ? k==null : key.equals(k)), that mapping is removed. (The map can contain at most one such mapping.)
+	 * <p>
+	 * Returns the value to which this map previously associated the key, or null if the map contained no mapping for the key.
+	 * <p>
+	 * If this map permits null values, then a return value of null does not necessarily indicate that the map contained no mapping for the key; it's also possible that the map explicitly mapped the key to null.
+	 * <p>
+	 * The map will not contain a mapping for the specified key once the call returns.
+	 * @param key key whose mapping is to be removed from the map
+	 * @return the previous value associated with key, or null if there was no mapping for key.
+	 */
 	@Override
 	public V remove(Object key) {
-		// TODO: FILL THIS IN!
+		for (int i = 0; i < this.entries.size(); i++ )
+		 {
+			if (this.equals(this.entries.get(i).key, key)) {
+				return this.entries.remove(i).value;
+			}
+		}
 		return null;
 	}
 
