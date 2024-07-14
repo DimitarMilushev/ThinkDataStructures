@@ -1,11 +1,7 @@
 package com.allendowney.thinkdast;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.PriorityQueue;
+import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * Provides sorting algorithms.
@@ -60,15 +56,11 @@ public class ListSorter<T> {
 	 * @return
 	 */
 	public List<T> mergeSort(List<T> list, Comparator<T> comparator) {
-		int size = list.size();
-		if (size <= 1) {
-			return list;
-		}
-		// make two lists with half the elements each.
-		List<T> first = mergeSort(new LinkedList<T>(list.subList(0, size/2)), comparator);
-		List<T> second = mergeSort(new LinkedList<T>(list.subList(size/2, size)), comparator);
-		
-		return merge(first, second, comparator);
+		if(list.size() < 2) return list;
+		final int mid = Math.ceilDiv (list.size(), 2);
+		final List<T> left = this.mergeSort(list.subList(0, mid), comparator);
+		final List<T> right = this.mergeSort(list.subList(mid, list.size()), comparator);
+		return Stream.concat(left.stream(), right.stream()).sorted(comparator).toList();
 	}
 
 	/**
