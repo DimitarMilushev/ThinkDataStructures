@@ -1,6 +1,9 @@
 package com.allendowney.thinkdast;
 
+import java.lang.reflect.Array;
 import java.util.*;
+import java.util.function.BinaryOperator;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -156,7 +159,73 @@ public class ListSorter<T> {
 		return res;
 	}
 
-	
+	public void radixSort(List<String> list) {
+		final int max = Collections.max(list.stream().map(String::length).toList());
+
+		int sigIndex = max - 1;
+		while (sigIndex >= 0) {
+			countingSort(list, sigIndex);
+			sigIndex--;
+		}
+	}
+
+	public void countingSort(List<String> list, int sig) {
+		final int[] occurrences = this.getOccurrenceTable(
+				list.stream().map(x -> mapStringToNumber(x, sig)).toList()
+		);
+		int counted = 0;
+		// accumulate positions
+		for (int i = 0; i < occurrences.length; i++) {
+			counted += occurrences[i];
+			occurrences[i] = counted;
+		}
+
+		final String[] lookup = list.toArray(String[]::new);
+		for (int i = lookup.length -1; i >= 0; i--) {
+			int temp = --occurrences[mapStringToNumber(lookup[i], sig)];
+			list.set(temp, lookup[i]);
+		}
+	}
+
+	private int mapStringToNumber(String el, int index) {
+		if (el.length() <= index) return '0';
+		return el.charAt(index);
+	}
+
+	public void countingSortChar(List<Character> list) {
+		List<Integer> asciiValues = list.stream().map(x -> (int) x).collect(Collectors.toList());
+		this.countingSort(asciiValues);
+		for (int i = 0; i < list.size(); i++) {
+			list.set(i, (char) asciiValues.get(i).intValue());
+		}
+	}
+	public void countingSort(List<Integer> list) {
+		if (list.isEmpty()) return;
+
+		final int[] occurrences = this.getOccurrenceTable(list);
+		int counted = 0;
+		// accumulate positions
+		for (int i = 0; i < occurrences.length; i++) {
+			counted += occurrences[i];
+			occurrences[i] = counted;
+		}
+
+		final Integer[] lookup = list.toArray(Integer[]::new);
+		for (int i = lookup.length -1; i >= 0; i--) {
+			int temp = --occurrences[lookup[i]];
+			list.set(temp, lookup[i]);
+		}
+	}
+
+	public int[] getOccurrenceTable(List<Integer> list) {
+		final int max = Collections.max(list);
+		final int[] counter = new int[max + 1];
+		for (var el : list) {
+			counter[el]++;
+		}
+		return counter;
+	}
+
 	/**
 	 * @param args
 	 */
@@ -185,5 +254,17 @@ public class ListSorter<T> {
 		list = new ArrayList<Integer>(Arrays.asList(6, 3, 5, 8, 1, 4, 2, 7));
 		List<Integer> queue = sorter.topK(4, list, comparator);
 		System.out.println(queue);
+
+		list = new ArrayList<Integer>(Arrays.asList(2, 1, 5, 2, 1, 7, 7));
+		sorter.countingSort(list);
+		System.out.println(list);
+
+		var charList = new ArrayList<>(Arrays.asList('a', '3', '5', 'c', '1', '7'));
+		sorter.countingSortChar(charList);
+		System.out.println(charList);
+
+		var strList = new ArrayList<>(Arrays.asList("bee", "age", "can", "add", "bad", "cab", "ace", "a"));
+		sorter.radixSort(strList);
+		System.out.println(strList);
 	}
 }
