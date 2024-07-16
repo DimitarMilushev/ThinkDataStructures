@@ -123,10 +123,7 @@ public class ListSorter<T> {
 	public void heapSort(List<T> list, Comparator<T> comparator) {
 		PriorityQueue<T> heap = new PriorityQueue<T>(list.size(), comparator);
 		heap.addAll(list);
-		list.clear();
-		while (!heap.isEmpty()) {
-			list.add(heap.poll());
-		}
+        list.replaceAll(ignored -> heap.poll());
 	}
 
 	
@@ -203,7 +200,6 @@ public class ListSorter<T> {
 		if (el.length() <= index) return '0';
 		return el.charAt(index);
 	}
-
 	public void countingSortChar(List<Character> list) {
 		List<Integer> asciiValues = list.stream().map(x -> (int) x).collect(Collectors.toList());
 		this.countingSort(asciiValues);
@@ -211,6 +207,7 @@ public class ListSorter<T> {
 			list.set(i, (char) asciiValues.get(i).intValue());
 		}
 	}
+
 	public void countingSort(List<Integer> list) {
 		if (list.isEmpty()) return;
 
@@ -267,20 +264,20 @@ public class ListSorter<T> {
 		List<Integer> queue = sorter.topK(4, list, comparator);
 		System.out.println(queue);
 //
-//		list = new ArrayList<Integer>(Arrays.asList(2, 1, 5, 2, 1, 7, 7));
-//		sorter.countingSort(list);
-//		System.out.println(list);
-//
-//		var charList = new ArrayList<>(Arrays.asList('a', '3', '5', 'c', '1', '7'));
-//		sorter.countingSortChar(charList);
-//		System.out.println(charList);
+		list = new ArrayList<Integer>(Arrays.asList(2, 1, 5, 2, 1, 7, 7));
+		sorter.countingSort(list);
+		System.out.println(list);
+
+		var charList = new ArrayList<>(Arrays.asList('a', '3', '5', 'c', '1', '7'));
+		sorter.countingSortChar(charList);
+		System.out.println(charList);
 
 		var strList = new ArrayList<>(Arrays.asList("bee", "age", "can", "add", "bad", "cab", "ace", "a"));
 		sorter.radixSort(strList);
 		System.out.println(strList);
 
-//		var strList = new ArrayList<>(Arrays.asList("122", "431", "565", "22", "1", "47", "787"));
-//		sorter.radixSort(strList);
-//		System.out.println(strList);
+		strList = new ArrayList<>(Arrays.asList("122", "431", "565", "22", "1", "47", "787"));
+		sorter.radixSort(strList);
+		System.out.println(strList);
 	}
 }
