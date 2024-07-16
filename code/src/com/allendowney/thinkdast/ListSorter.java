@@ -161,17 +161,16 @@ public class ListSorter<T> {
 
 	public void radixSort(List<String> list) {
 		final int max = Collections.max(list.stream().map(String::length).toList());
-
 		int sigIndex = max - 1;
 		while (sigIndex >= 0) {
-			countingSort(list, sigIndex);
+			countingSort(list, max, sigIndex);
 			sigIndex--;
 		}
 	}
 
-	public void countingSort(List<String> list, int sig) {
+	public void countingSort(List<String> list, int n, int sig) {
 		final int[] occurrences = this.getOccurrenceTable(
-				list.stream().map(x -> mapStringToNumber(x, sig)).toList()
+				list.stream().map(x -> mapStringToNumber(x, n, sig)).toList()
 		);
 		int counted = 0;
 		// accumulate positions
@@ -182,12 +181,25 @@ public class ListSorter<T> {
 
 		final String[] lookup = list.toArray(String[]::new);
 		for (int i = lookup.length -1; i >= 0; i--) {
-			int temp = --occurrences[mapStringToNumber(lookup[i], sig)];
+			int temp = --occurrences[mapStringToNumber(lookup[i], n, sig)];
 			list.set(temp, lookup[i]);
 		}
 	}
 
-	private int mapStringToNumber(String el, int index) {
+	/**
+	 * Handles char value mapping of inconsistent length string values
+	 * Ex. (1, 123) -> it treats it as (001, 123) so that at index 0 we get 1 and 3
+	 * @param el string value
+	 * @param size expected size of string (largest)
+	 * @param index char index in string
+	 */
+	private int mapStringToNumber(String el, int size, int index) {
+		final int sDiff = size - el.length();
+		if (sDiff > 0) {
+			//reverse index
+			index -= sDiff;
+			if (index < 0) return '0';
+		}
 		if (el.length() <= index) return '0';
 		return el.charAt(index);
 	}
@@ -254,17 +266,21 @@ public class ListSorter<T> {
 		list = new ArrayList<Integer>(Arrays.asList(6, 3, 5, 8, 1, 4, 2, 7));
 		List<Integer> queue = sorter.topK(4, list, comparator);
 		System.out.println(queue);
-
-		list = new ArrayList<Integer>(Arrays.asList(2, 1, 5, 2, 1, 7, 7));
-		sorter.countingSort(list);
-		System.out.println(list);
-
-		var charList = new ArrayList<>(Arrays.asList('a', '3', '5', 'c', '1', '7'));
-		sorter.countingSortChar(charList);
-		System.out.println(charList);
+//
+//		list = new ArrayList<Integer>(Arrays.asList(2, 1, 5, 2, 1, 7, 7));
+//		sorter.countingSort(list);
+//		System.out.println(list);
+//
+//		var charList = new ArrayList<>(Arrays.asList('a', '3', '5', 'c', '1', '7'));
+//		sorter.countingSortChar(charList);
+//		System.out.println(charList);
 
 		var strList = new ArrayList<>(Arrays.asList("bee", "age", "can", "add", "bad", "cab", "ace", "a"));
 		sorter.radixSort(strList);
 		System.out.println(strList);
+
+//		var strList = new ArrayList<>(Arrays.asList("122", "431", "565", "22", "1", "47", "787"));
+//		sorter.radixSort(strList);
+//		System.out.println(strList);
 	}
 }
