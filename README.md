@@ -3,15 +3,15 @@
 LaTeX source and supporting code for *Think Data Structures: Algorithms and Information Retrieval in Java*
 
 ## Progress
-- [x] 1. Interfaces
-- [x] 2. Analysis of Algorithms
-- [ ] 3. ArrayList
-- [ ] 4. LinkedList
-- [ ] 5. Doubly Linked List
-- [ ] 6. Tree Traversal
-- [ ] 7. Getting to Philosophy
-- [ ] 8. Indexer
-- [ ] 9. The Map Interface
+- [x] 1.  Interfaces
+- [x] 2.  Analysis of Algorithms
+- [x] 3.  ArrayList
+- [ ] 4.  LinkedList
+- [ ] 5.  Doubly Linked List
+- [ ] 6.  Tree Traversal
+- [ ] 7.  Getting to Philosophy
+- [ ] 8.  Indexer
+- [ ] 9.  The Map Interface
 - [ ] 10. Hashing
 - [ ] 11. HashMap
 - [ ] 12. TreeMap
