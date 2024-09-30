@@ -2,7 +2,26 @@
 
 LaTeX source and supporting code for *Think Data Structures: Algorithms and Information Retrieval in Java*
 
+## Progress
+- [x] 1. Interfaces
+- [ ] 2. Analysis of Algorithms
+- [ ] 3. ArrayList
+- [ ] 4. LinkedList
+- [ ] 5. Doubly Linked List
+- [ ] 6. Tree Traversal
+- [ ] 7. Getting to Philosophy
+- [ ] 8. Indexer
+- [ ] 9. The Map Interface
+- [ ] 10. Hashing
+- [ ] 11. HashMap
+- [ ] 12. TreeMap
+- [ ] 13. Binary Search Tree
+- [ ] 14. Persistence
+- [ ] 15. Crawling Wikipedia
+- [ ] 16. Boolean Search
+- [ ] 17. Sorting
 
+## Description
 Data structures and algorithms are among the most important inventions
 of the last 50 years, and they are fundamental tools
 software engineers need to know.  But in my opinion, most of the books
