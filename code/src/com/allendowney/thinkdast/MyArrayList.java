@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.stream.IntStream;
 
 /**
  * @author downey
@@ -44,8 +45,24 @@ public class MyArrayList<T> implements List<T> {
 
 	@Override
 	public boolean add(T element) {
-		// TODO: FILL THIS IN!
-		return false;
+		// Check if it has size left | expand
+		if (size() >= array.length) {
+			expand();
+		}
+		// Use size as index of the next empty slot
+		// Append at size and increment size
+		this.array[size()] = element;
+		++size;
+		// Returns true if the collection has changed (has updated the element).
+		return this.array[size() - 1] == element;
+	}
+
+	private void expand() {
+		final int expandedSize = array.length * 2;
+		final T[] larger = (T[]) new Object[expandedSize];
+
+        IntStream.range(0, size()).forEach(i -> larger[i] = array[i]);
+		array = larger;
 	}
 
 	@Override
@@ -102,7 +119,7 @@ public class MyArrayList<T> implements List<T> {
 
 	@Override
 	public T get(int index) {
-		if (index < 0 || index >= size) {
+		if (index < 0 || index >= size()) {
 			throw new IndexOutOfBoundsException();
 		}
 		return array[index];
@@ -110,7 +127,11 @@ public class MyArrayList<T> implements List<T> {
 
 	@Override
 	public int indexOf(Object target) {
-		// TODO: FILL THIS IN!
+		for (int i = 0; i < size; i++) {
+			if (equals(target, array[i])) {
+				return i;
+			}
+		}
 		return -1;
 	}
 
@@ -181,8 +202,20 @@ public class MyArrayList<T> implements List<T> {
 
 	@Override
 	public T remove(int index) {
-		// TODO: FILL THIS IN!
-		return null;
+		if (index < 0 || index >= size()) {
+			throw new IndexOutOfBoundsException();
+		}
+		// Find and remove from list.
+		T target = this.array[index];
+		this.array[index] = null;
+
+		// Shift remaining elements to the left
+		for (int i = index; i < size(); i++) {
+			this.array[i] = this.array[i + 1];
+		}
+		--size;
+
+		return target;
 	}
 
 	@Override
@@ -201,8 +234,14 @@ public class MyArrayList<T> implements List<T> {
 
 	@Override
 	public T set(int index, T element) {
-		// TODO: FILL THIS IN!
-		return null;
+		if (index < 0 || index >= size()) {
+			throw new IndexOutOfBoundsException();
+		}
+
+		final T target = this.array[index];
+		this.array[index] = element;
+
+		return target;
 	}
 
 	@Override
