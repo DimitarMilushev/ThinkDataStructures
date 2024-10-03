@@ -4,6 +4,7 @@
 package com.allendowney.thinkdast;
 
 import java.awt.Color;
+import java.io.Serial;
 
 import org.apache.commons.math3.stat.regression.SimpleRegression;
 import org.jfree.chart.ChartFactory;
@@ -28,6 +29,7 @@ public class Profiler extends ApplicationFrame {
 	/**
 	 * This is here because extending ApplicationFrame requires it.
 	 */
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	/**
