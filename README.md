@@ -7,7 +7,7 @@ LaTeX source and supporting code for *Think Data Structures: Algorithms and Info
 - [x] 2.  Analysis of Algorithms
 - [x] 3.  ArrayList
 - [x] 4.  LinkedList
-- [ ] 5.  Doubly Linked List
+- [x] 5.  Doubly Linked List
 - [ ] 6.  Tree Traversal
 - [ ] 7.  Getting to Philosophy
 - [ ] 8.  Indexer
