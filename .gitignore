@@ -1,3 +1,7 @@
+*/src/resources.en.wikipedia.org.wiki/*
+/out/*
+/solutions/*
+
 *.class
 
 # Mobile Tools for Java (J2ME)

@@ -4,7 +4,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
+import com.allendowney.thinkdast.constants.ResourcesConstants;
+import com.allendowney.thinkdast.utils.ResourcesUtility;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -14,15 +18,18 @@ import org.jsoup.select.Elements;
 
 public class WikiFetcher {
 	private static WikiFetcher instance;
+	private ResourcesUtility resourcesUtility;
 	private long lastRequestTime = -1;
 	private long minInterval = 1000;
 	public static WikiFetcher getInstance() {
 		if (instance == null) {
-			instance = WikiFetcher.getInstance();
+			instance = new WikiFetcher();
 		}
 		return instance;
 	}
-	private WikiFetcher() {}
+	private WikiFetcher() {
+		this.resourcesUtility = new ResourcesUtility();
+	}
 
 	/**
 	 * Fetches and parses a URL string, returning a list of paragraph elements.
@@ -37,6 +44,7 @@ public class WikiFetcher {
 		// download and parse the document
 		Connection conn = Jsoup.connect(url);
 		Document doc = conn.get();
+		this.resourcesUtility.downloadWikiPage(doc);
 
 		// select the content text and pull out the paragraphs.
 		Element content = doc.getElementById("mw-content-text");
@@ -55,10 +63,11 @@ public class WikiFetcher {
 	 */
 	public Elements readWikipedia(String url) throws IOException {
 		URL realURL = new URL(url);
+		this.resourcesUtility.ensureWikiDir();
 
 		// assemble the file name
 		String slash = File.separator;
-		String filename = "resources" + slash + realURL.getHost() + realURL.getPath();
+		String filename = ResourcesConstants.WIKI_PATH + slash + this.resourcesUtility.getWikiPageFileNameFromURL(realURL);
 
 		// read the file
 		InputStream stream = WikiFetcher.class.getClassLoader().getResourceAsStream(filename);
