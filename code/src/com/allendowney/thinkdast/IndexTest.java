@@ -17,7 +17,7 @@ public class IndexTest {
 
 	@Before
 	public void setUp() {
-		wf = new WikiFetcher();
+		wf = WikiFetcher.getInstance();
 		index = new Index();
 	}
 

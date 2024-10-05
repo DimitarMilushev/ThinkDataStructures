@@ -18,7 +18,7 @@ import org.junit.Test;
  */
 public class WikiParserTest {
 
-	final static WikiFetcher wf = new WikiFetcher();
+	final static WikiFetcher wf = WikiFetcher.getInstance();
 	
 	/**
 	 * Test method for {@link WikiParser#findFirstLink()}.

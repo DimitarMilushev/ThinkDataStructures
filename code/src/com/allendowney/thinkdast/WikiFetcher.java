@@ -18,7 +18,7 @@ public class WikiFetcher {
 	private long minInterval = 1000;
 	public static WikiFetcher getInstance() {
 		if (instance == null) {
-			instance = new WikiFetcher();
+			instance = WikiFetcher.getInstance();
 		}
 		return instance;
 	}
@@ -94,7 +94,7 @@ public class WikiFetcher {
 	 * @throws IOException
 	 */
 	public static void main(String[] args) throws IOException {
-		WikiFetcher wf = new WikiFetcher();
+		WikiFetcher wf = WikiFetcher.getInstance();
 		String url = "https://en.wikipedia.org/wiki/Java_(programming_language)";
 		Elements paragraphs = wf.readWikipedia(url);
 

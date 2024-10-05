@@ -25,7 +25,7 @@ public class TermCounterTest {
 	public void setUp() throws Exception {
 		String url = "https://en.wikipedia.org/wiki/Java_(programming_language)";
 		
-		WikiFetcher wf = new WikiFetcher();
+		WikiFetcher wf = WikiFetcher.getInstance();
 		Elements paragraphs = wf.readWikipedia(url);
 		
 		counter = new TermCounter(url.toString());
