@@ -10,7 +10,7 @@ import org.jsoup.select.Elements;
 public class WikiPhilosophy {
 
     final static List<String> visited = new ArrayList<String>();
-    final static WikiFetcher wf = new WikiFetcher();
+    final static WikiFetcher wf = WikiFetcher.getInstance();
 
     /**
      * Tests a conjecture about Wikipedia and Philosophy.
