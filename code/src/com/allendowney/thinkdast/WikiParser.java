@@ -21,8 +21,7 @@ public class WikiParser {
 	private Elements paragraphs;
 	
 	// the stack of open delimiters
-	// TODO: consider simplifying this by counting parentheses
-	private Deque<String> parenthesisStack;
+	private long openedParenthesis;
 	
 
 	/**
@@ -32,7 +31,7 @@ public class WikiParser {
 	 */
 	public WikiParser(Elements paragraphs) {
 		this.paragraphs = paragraphs;
-		this.parenthesisStack = new ArrayDeque<String>();
+		this.openedParenthesis = 0;
 	}
 	
 	/**
@@ -48,7 +47,7 @@ public class WikiParser {
 			if (firstLink != null) {
 				return firstLink;
 			}
-			if (!parenthesisStack.isEmpty()) {
+			if (isInParens()) {
 				System.err.println("Warning: unbalanced parentheses."); 
 	   	 	}
 		}
@@ -116,7 +115,7 @@ public class WikiParser {
 			return false;
 		}
 		// in parenthesis
-		if (isInParens(elt)) {
+		if (isInParens()) {
 			return false;
 		}
 		// a bookmark
@@ -161,13 +160,10 @@ public class WikiParser {
 
 	/**
 	 * Checks whether the element is in parentheses (possibly nested).
-	 * 
-	 * @param elt
-	 * @return
 	 */
-	private boolean isInParens(Element elt) {
+	private boolean isInParens() {
 		// check whether there are any parentheses on the stack
-		return !parenthesisStack.isEmpty();
+		return openedParenthesis > 0;
 	}
 
 	/**
@@ -181,7 +177,7 @@ public class WikiParser {
 	private boolean isItalic(Element start) {
 		// follow the parent chain until we get to null
 		for (Element elt=start; elt != null; elt = elt.parent()) {
-			if (elt.tagName().equals("i") || elt.tagName().equals("em")) {
+			if (elt.tagName().equals("i") || elt.tagName().equals("em") || elt.hasClass("hatnote")) {
 				return true;
 			}
 		}
@@ -199,13 +195,13 @@ public class WikiParser {
 		     String token = st.nextToken();
 		     // System.out.print(token);
 		     if (token.equals("(")) {
-		    	 parenthesisStack.push(token);
+		    	 ++this.openedParenthesis;
 		     }
 		     if (token.equals(")")) {
-		    	 if (parenthesisStack.isEmpty()) {
+		    	 if (!isInParens()) {
 		    		 System.err.println("Warning: unbalanced parentheses."); 
 		    	 }
-		    	 parenthesisStack.pop();
+				--this.openedParenthesis;
 		     }
 		}
 	}
