@@ -103,9 +103,12 @@ public class WikiParser {
 	 * @return
 	 */
 	private boolean validLink(Element elt) {
-		// it's no good if it's
-		// not a link
+		// it's no good if it's not a link
 		if (!elt.tagName().equals("a")) {
+			return false;
+		}
+		// is red link (missing page)
+		if (elt.hasClass("new")) {
 			return false;
 		}
 		// in italics
@@ -124,8 +127,24 @@ public class WikiParser {
 		if (startsWith(elt, "/wiki/Help:")) {
 			return false;
 		}
-		// TODO: there are a couple of other "rules" we haven't handled
+		// is external origin
+		if (!startsWith(elt, "/wiki/")) {
+			return false;
+		}
+		// Skip uppercase links
+		if (startsWithUppercase(elt)) {
+			return false;
+		}
+		// Redirects back to the same page
+		// I'm not sure if I can do this without updating the API as
+		// my only idea is checking for anchors, but they can also be for
+		// different pages.
+		// The other solution is getting the Document or passing the URL to the constructor.
 		return true;
+	}
+
+	private boolean startsWithUppercase(Element elt) {
+		return elt.text().charAt(0) >= 'A' && elt.text().charAt(0) <= 'Z';
 	}
 
 	/**

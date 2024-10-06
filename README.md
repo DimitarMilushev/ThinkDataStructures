@@ -9,7 +9,7 @@ LaTeX source and supporting code for *Think Data Structures: Algorithms and Info
 - [x] 4.  LinkedList
 - [x] 5.  Doubly Linked List
 - [x] 6.  Tree Traversal
-- [ ] 7.  Getting to Philosophy
+- [x] 7.  Getting to Philosophy
 - [ ] 8.  Indexer
 - [ ] 9.  The Map Interface
 - [ ] 10. Hashing

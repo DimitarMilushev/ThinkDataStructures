@@ -18,9 +18,9 @@ import org.jsoup.select.Elements;
 
 public class WikiFetcher {
 	private static WikiFetcher instance;
-	private ResourcesUtility resourcesUtility;
+	private final ResourcesUtility resourcesUtility;
 	private long lastRequestTime = -1;
-	private long minInterval = 1000;
+	private static final long minInterval = 1000;
 	public static WikiFetcher getInstance() {
 		if (instance == null) {
 			instance = new WikiFetcher();
@@ -49,11 +49,15 @@ public class WikiFetcher {
 		// select the content text and pull out the paragraphs.
 		Element content = doc.getElementById("mw-content-text");
 
-		// TODO: avoid selecting paragraphs from sidebars and boxouts
-		Elements paras = content.select("p");
-		return paras;
+		// avoid selecting paragraphs from sidebars and boxouts
+		this.clearSidebarsAndBoxouts(content);
+
+		return content.select("p"); // Remove sidebars
 	}
 
+	private void clearSidebarsAndBoxouts(Element DOM) {
+		DOM.select(".sidebar, .infobox").remove();
+	}
 	/**
 	 * Reads the contents of a Wikipedia page from src/resources.
 	 *
@@ -75,8 +79,7 @@ public class WikiFetcher {
 
 		// parse the contents of the file
 		Element content = doc.getElementById("mw-content-text");
-		Elements paras = content.select("p");
-		return paras;
+		return content.select("p");
 	}
 
 	/**

@@ -18,13 +18,15 @@ public class ResourcesUtility {
     public void ensureWikiDir() throws IOException {
         final Path srcPath = Path.of(ResourcesUtility.srcPath);
         final Path wikiPath = Path.of(srcPath +File.separator + ResourcesConstants.WIKI_PATH);
-        System.out.println(wikiPath);
+
         if (Files.notExists(wikiPath)) {
             Files.createDirectory(wikiPath);
         }
     }
 
     public void downloadWikiPage(Document page) throws IOException {
+        ensureWikiDir();
+
         final String pageName = this.getWikiPageFileNameFromURL(new URL(page.location()));
         final String dest = ResourcesUtility.srcPath + File.separator + ResourcesConstants.WIKI_PATH + File.separator + pageName;
         final File file = Files.createFile(Path.of(dest)).toFile();
