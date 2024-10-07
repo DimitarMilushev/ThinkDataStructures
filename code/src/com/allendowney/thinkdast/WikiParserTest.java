@@ -28,7 +28,7 @@ public class WikiParserTest {
 	public void testFindFirstLink1() throws IOException {
 		String url = "https://en.wikipedia.org/wiki/Java_(programming_language)";
 		String href = findFirstLink(url);
-		assertThat(href, is("/wiki/Programming_language"));
+		assertThat(href, is("/resources/en/wikipedia/org/wiki/Programming_language"));
 	}
 
 	/**
@@ -53,8 +53,7 @@ public class WikiParserTest {
 		Elements paragraphs = wf.readWikipedia(url);
 		WikiParser wp = new WikiParser(paragraphs);
 		Element elt = wp.findFirstLink();
-		String href = elt.attr("href");
-		return href;
+        return elt.attr("href");
 	}
 
 }

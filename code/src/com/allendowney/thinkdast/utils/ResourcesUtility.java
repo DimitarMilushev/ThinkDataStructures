@@ -14,13 +14,13 @@ import java.nio.file.Path;
 import java.util.Arrays;
 
 public class ResourcesUtility {
-    private static final String srcPath = System.getProperty("user.dir") + File.separator + "code" + File.separator + "src";
+    private static final String srcPath = String.join(File.separator, System.getProperty("user.dir"), "code", "src");
     public void ensureWikiDir() throws IOException {
         final Path srcPath = Path.of(ResourcesUtility.srcPath);
         final Path wikiPath = Path.of(srcPath +File.separator + ResourcesConstants.WIKI_PATH);
 
-        if (Files.notExists(wikiPath)) {
-            Files.createDirectory(wikiPath);
+        if (wikiPath.toFile().mkdirs()) {
+            System.out.println(wikiPath + " created.");
         }
     }
 

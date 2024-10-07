@@ -28,7 +28,7 @@ public class TermCounterTest {
 		WikiFetcher wf = WikiFetcher.getInstance();
 		Elements paragraphs = wf.readWikipedia(url);
 		
-		counter = new TermCounter(url.toString());
+		counter = new TermCounter(url);
 		counter.processElements(paragraphs);
 	}
 
