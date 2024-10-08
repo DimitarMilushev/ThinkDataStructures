@@ -12,7 +12,7 @@ LaTeX source and supporting code for *Think Data Structures: Algorithms and Info
 - [x] 7.  Getting to Philosophy
 - [x] 8.  Indexer
 - [x] 9.  The Map Interface
-- [ ] 10. Hashing
+- [x] 10. Hashing
 - [ ] 11. HashMap
 - [ ] 12. TreeMap
 - [ ] 13. Binary Search Tree

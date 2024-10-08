@@ -40,7 +40,14 @@ public class MyHashMap<K, V> extends MyBetterMap<K, V> implements Map<K, V> {
 	 *
 	 */
 	protected void rehash() {
-		// TODO: FILL THIS IN!
+		final var previous = this.maps;
+		this.makeMaps(this.maps.size() * 2);
+
+		for (var map : previous) {
+			for (var key : map.keySet()) {
+				this.put(key, map.get(key));
+			}
+		}
 	}
 
 	/**
