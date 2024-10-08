@@ -63,7 +63,12 @@ public class MyLinearMap<K, V> implements Map<K, V> {
 	 * @param target
 	 */
 	private Entry findEntry(Object target) {
-		// TODO: FILL THIS IN!
+		for (Entry entry : this.entries) {
+			if (this.equals(target, entry.getKey())) {
+				return entry;
+			}
+		}
+
 		return null;
 	}
 
@@ -98,8 +103,10 @@ public class MyLinearMap<K, V> implements Map<K, V> {
 
 	@Override
 	public V get(Object key) {
-		// TODO: FILL THIS IN!
-		return null;
+		final Entry entry = this.findEntry(key);
+		if (entry == null) return null;
+
+		return entry.value;
 	}
 
 	@Override
@@ -118,8 +125,17 @@ public class MyLinearMap<K, V> implements Map<K, V> {
 
 	@Override
 	public V put(K key, V value) {
-		// TODO: FILL THIS IN!
-		return null;
+		if (!this.containsKey(key)) {
+            this.entries.add(new Entry(key, value));
+            return null;
+		}
+
+		var entry = this.findEntry(key);
+		V lastValue = entry.value;
+
+		entry.setValue(value);
+
+		return lastValue;
 	}
 
 	@Override
@@ -131,7 +147,19 @@ public class MyLinearMap<K, V> implements Map<K, V> {
 
 	@Override
 	public V remove(Object key) {
-		// TODO: FILL THIS IN!
+		// Rather than using the provided methods, this solution
+		// reaches the entry index and starts removing from that index onward.
+		// This is a short optimization over the linear findEntry method that would have to
+		// do N operations to find the item and another N operations to remove it.
+		// O(N) < O(N + N) even if negligible.
+		for (int i = 0; i < this.entries.size(); i++) {
+			if (this.equals(entries.get(i).key, key)) {
+				final Entry removed = entries.get(i);
+				entries.remove(i);
+				return removed.value;
+			}
+		}
+
 		return null;
 	}
 

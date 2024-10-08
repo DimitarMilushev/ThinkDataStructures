@@ -11,7 +11,7 @@ LaTeX source and supporting code for *Think Data Structures: Algorithms and Info
 - [x] 6.  Tree Traversal
 - [x] 7.  Getting to Philosophy
 - [x] 8.  Indexer
-- [ ] 9.  The Map Interface
+- [x] 9.  The Map Interface
 - [ ] 10. Hashing
 - [ ] 11. HashMap
 - [ ] 12. TreeMap

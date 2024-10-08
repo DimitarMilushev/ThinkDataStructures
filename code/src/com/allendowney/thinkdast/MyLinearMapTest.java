@@ -27,7 +27,7 @@ public class MyLinearMapTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		map = new MyLinearMap<String, Integer>();
+		map = new MyLinearMap<>();
 		map.put("One", 1);
 		map.put("Two", 2);
 		map.put("Three", 3);
