@@ -3,13 +3,7 @@
  */
 package com.allendowney.thinkdast;
 
-import java.util.Collection;
-import java.util.Deque;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Implementation of a Map using a binary search tree.
@@ -71,7 +65,25 @@ public class MyTreeMap<K, V> implements Map<K, V> {
 		@SuppressWarnings("unchecked")
 		Comparable<? super K> k = (Comparable<? super K>) target;
 
-		// TODO: FILL THIS IN!
+		// BST rules
+		// 1. if current == null       ====> RETURN NULL;
+		// 2. if target == current.key ===> RETURN current;
+		// 3. if current.key > target  ====> CHECK LEFT
+		//	1. if current.left == null ====> RETURN NULL;
+		//  2. if current = current.left
+		// 4. else 					   ====> CHECK RIGHT
+		// 	1. current.right == null =====> RETURN NULL;
+		//  2. current = current.right;
+		Node current = this.root;
+		int compare;
+		while (current != null) {
+			compare = k.compareTo(current.key);
+			if (compare == 0) return current;
+
+			current = (compare > 0) ? current.right : current.left;
+
+		}
+
 		return null;
 	}
 
@@ -95,8 +107,12 @@ public class MyTreeMap<K, V> implements Map<K, V> {
 	}
 
 	private boolean containsValueHelper(Node node, Object target) {
-		// TODO: FILL THIS IN!
-		return false;
+		if (node == null) return false;
+
+		if (containsValueHelper(node.left, target)) return true;
+		if (equals(target, node.value)) return true;
+
+		return containsValueHelper(node.right, target);
 	}
 
 	@Override
@@ -121,8 +137,41 @@ public class MyTreeMap<K, V> implements Map<K, V> {
 	@Override
 	public Set<K> keySet() {
 		Set<K> set = new LinkedHashSet<K>();
-		// TODO: FILL THIS IN!
+		keySetHelper(set, root);
+//		keySetHelperIterative(set);
 		return set;
+	}
+
+	// Do a DFS over BST. Elements should come in order if no duplicates exist.
+	// Make sure it's in-order so that the left (smallest) element comes first, then the root, then the right (greatest)
+	private void keySetHelper(Set<K> set, Node current) {
+		if (current == null) return;
+
+		if (current.left != null) keySetHelper(set, current.left);
+
+		set.add(current.key);
+
+		if (current.right != null) keySetHelper(set, current.right);
+	}
+
+	private void keySetHelperIterative(Set<K> set) {
+		if (root == null) return;
+
+		Deque<Node> st = new ArrayDeque<>();
+		st.push(root);
+
+		Node curr = st.peek();
+		while (!st.isEmpty()) {
+			while (curr != null) {
+				st.push(curr);
+				curr = curr.left;
+			}
+
+			curr = st.pop();
+			set.add(curr.key);
+
+			curr = curr.right;
+		}
 	}
 
 	@Override
@@ -135,12 +184,40 @@ public class MyTreeMap<K, V> implements Map<K, V> {
 			size++;
 			return null;
 		}
+
 		return putHelper(root, key, value);
 	}
 
 	private V putHelper(Node node, K key, V value) {
-		// TODO: FILL THIS IN!
-		return null;
+		// Traverse until expected pos is found.
+		// 1. If NULL => parent.(left | right) = new Node(key, value);
+		// 2. ELSE node.val = value;
+		@SuppressWarnings("unchecked")
+		Comparable<? super K> k = (Comparable<? super K>) node.key;
+		final int comparison = k.compareTo(key);
+
+		// Check left (lesser)
+		if (comparison > 0) {
+			if (node.left != null) return putHelper(node.left, key, value);
+
+			node.left = new Node(key, value);
+			++size;
+			return null;
+		}
+
+		// Check right (greater)
+		if (comparison < 0) {
+			if (node.right != null) return putHelper(node.right, key, value);
+
+			node.right = new Node(key, value);
+			++size;
+			return null;
+		}
+
+
+		final V old = node.value;
+		node.value = value;
+		return old;
 	}
 
 	@Override
