@@ -15,11 +15,13 @@ LaTeX source and supporting code for *Think Data Structures: Algorithms and Info
 - [x] 10. Hashing
 - [x] 11. HashMap
 - [x] 12. TreeMap
-- [ ] 13. Binary Search Tree
+- [x] 13. Binary Search Tree
+  - [ ] Bonus. Implement a balanced tree
 - [ ] 14. Persistence
 - [ ] 15. Crawling Wikipedia
 - [ ] 16. Boolean Search
 - [ ] 17. Sorting
+
 
 ## Description
 Data structures and algorithms are among the most important inventions

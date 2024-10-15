@@ -3,8 +3,8 @@
  */
 package com.allendowney.thinkdast;
 
-import static org.junit.Assert.assertThat;
 import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -167,7 +167,19 @@ public class MyTreeMapTest {
 	 */
 	@Test
 	public void testRemove() {
-		// nothing to test, since this method is not implemented
+		final String key = "08";
+		final int expected = 8;
+
+		final int actual = map.remove(key);
+		final Integer actualPostRemoval = map.remove(key);
+
+		assertEquals(actual, expected);
+		assertNull(actualPostRemoval);
+	}
+
+	@Test
+	public void testRemoveInOrder() {
+
 	}
 
 	/**

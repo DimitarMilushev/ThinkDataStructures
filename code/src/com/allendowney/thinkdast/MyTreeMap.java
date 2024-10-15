@@ -3,6 +3,8 @@
  */
 package com.allendowney.thinkdast;
 
+import org.apache.commons.math3.exception.NullArgumentException;
+
 import java.util.*;
 
 /**
@@ -229,8 +231,82 @@ public class MyTreeMap<K, V> implements Map<K, V> {
 
 	@Override
 	public V remove(Object key) {
-		// OPTIONAL TODO: FILL THIS IN!
-		throw new UnsupportedOperationException();
+		if (key == null) throw new IllegalArgumentException();
+
+		Node forRemoval;
+		if (equals(root.key, key)) {
+			forRemoval = root;
+			root = null;
+		} else {
+			Node parent = findParentOf(key, root);
+			if (parent == null) return null; // Key not found
+
+			@SuppressWarnings("unchecked")
+			Comparable<? super K> k = (Comparable<? super K>) key;
+			int comp = k.compareTo(parent.key);
+
+			if (comp < 0) {
+				forRemoval = parent.left;
+				parent.left = null;
+			} else {
+				forRemoval = parent.right;
+				parent.right = null;
+			}
+		}
+		//TODO: should keep the natural ordering
+
+		reBalanceFrom(forRemoval);
+
+		return forRemoval.value;
+	}
+
+	private void reBalanceFrom(Node from) {
+		List<Node> removed = new LinkedList<>();
+		// traverse over items
+		// add to the list
+		// remove from the tree
+		reBalanceTraverseHelper(from, removed);
+
+		// When cleared, call add on the tree.
+		removed.forEach((x) -> this.put(x.key, x.value));
+	}
+
+	private void reBalanceTraverseHelper(Node node, List<Node> removed) {
+		if (node == null) return;
+
+		reBalanceTraverseHelper(node.left, removed);
+		if (node.left != null) {
+			removed.add(node.left);
+			node.left = null;
+		}
+
+		reBalanceTraverseHelper(node.right, removed);
+		if (node.right != null) {
+			removed.add(node.right);
+			node.right = null;
+		}
+	}
+
+	private Node findParentOf(Object target, Node node) {
+		if (target == null) throw new IllegalArgumentException("Aborted search because Map doesn't support null values");
+		if (node == null) return null;
+
+		@SuppressWarnings("unchecked")
+		Comparable<? super K> k = (Comparable<? super K>) target;
+		int comp = k.compareTo(node.key);
+		if (comp < 0) {
+			if (node.left != null && equals(node.left.key, target)) return node;
+
+			return findParentOf(target, node.left);
+		}
+		if (comp > 0) {
+			if (node.right != null && equals(node.right.key, target)) return node;
+
+			return findParentOf(target, node.right);
+		}
+
+		// in case it's root.
+		return null;
 	}
 
 	@Override
