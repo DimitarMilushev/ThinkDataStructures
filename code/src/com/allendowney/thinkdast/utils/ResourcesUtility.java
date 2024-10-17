@@ -14,7 +14,7 @@ import java.nio.file.Path;
 import java.util.Arrays;
 
 public class ResourcesUtility {
-    private static final String srcPath = String.join(File.separator, System.getProperty("user.dir"), "code", "src");
+    private static final String srcPath = String.join(File.separator, System.getProperty("user.dir"),  "src");
     public void ensureWikiDir() throws IOException {
         final Path srcPath = Path.of(ResourcesUtility.srcPath);
         final Path wikiPath = Path.of(srcPath +File.separator + ResourcesConstants.WIKI_PATH);

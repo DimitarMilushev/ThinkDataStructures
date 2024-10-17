@@ -167,19 +167,30 @@ public class MyTreeMapTest {
 	 */
 	@Test
 	public void testRemove() {
-		final String key = "08";
-		final int expected = 8;
+		final String key = "06";
+		final int expected = 6;
+		final int expectedSize = this.map.size() - 1;
 
 		final int actual = map.remove(key);
 		final Integer actualPostRemoval = map.remove(key);
+		final int actualSize = map.size();
 
+		assertEquals(expectedSize, actualSize);
 		assertEquals(actual, expected);
 		assertNull(actualPostRemoval);
 	}
 
 	@Test
-	public void testRemoveInOrder() {
+	public void testRemoveEmpty() {
+		Integer expectedReturnValue = null;
+		int expectedSize = 0;
 
+		map.clear();
+		final Integer actualReturnValue = map.remove("06");
+		final int actualSize = map.size();
+
+		assertEquals(expectedSize, actualSize);
+		assertEquals(expectedReturnValue, actualReturnValue);
 	}
 
 	/**

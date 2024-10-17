@@ -3,8 +3,6 @@
  */
 package com.allendowney.thinkdast;
 
-import org.apache.commons.math3.exception.NullArgumentException;
-
 import java.util.*;
 
 /**
@@ -232,6 +230,7 @@ public class MyTreeMap<K, V> implements Map<K, V> {
 	@Override
 	public V remove(Object key) {
 		if (key == null) throw new IllegalArgumentException();
+		if (root == null) return null;
 
 		Node forRemoval;
 		if (equals(root.key, key)) {
@@ -253,38 +252,49 @@ public class MyTreeMap<K, V> implements Map<K, V> {
 				parent.right = null;
 			}
 		}
-		//TODO: should keep the natural ordering
+		--size; // Removed node
 
 		reBalanceFrom(forRemoval);
 
 		return forRemoval.value;
 	}
 
+	/**
+	 * A heuristic re-balancing where the children of {@code from} are re-inserted into the tree.
+	 *
+	 * @param from
+	 */
 	private void reBalanceFrom(Node from) {
-		List<Node> removed = new LinkedList<>();
-		// traverse over items
-		// add to the list
-		// remove from the tree
-		reBalanceTraverseHelper(from, removed);
-
+		// Persist collected children.
+		List<Node> children = collectChildren(from);
+		size -= children.size();
 		// When cleared, call add on the tree.
-		removed.forEach((x) -> this.put(x.key, x.value));
+		children.forEach((x) -> this.put(x.key, x.value));
 	}
 
-	private void reBalanceTraverseHelper(Node node, List<Node> removed) {
-		if (node == null) return;
+	/**
+	 * Collects children of parent {@code node} by traversing them using a post-order BFS, to keep the natural order.
+	 * @param parent The starting point (inclusive).
+	 * @return List of nodes that are removed.
+	 */
+	private List<Node> collectChildren(Node parent) {
+		List<Node> removed = new LinkedList<>();
+		if (parent == null) return removed;
 
-		reBalanceTraverseHelper(node.left, removed);
-		if (node.left != null) {
-			removed.add(node.left);
-			node.left = null;
+		Queue<Node> queue = new LinkedList<>();
+		if (parent.right != null)  queue.offer(parent.right);
+		if (parent.left != null) queue.offer(parent.left);
+
+		Node current;
+		while (!queue.isEmpty()) {
+			current = queue.poll();
+			removed.add(current);
+			// Makes sense to place the greater (right) element before the left (smaller).
+			if (current.right != null)  queue.offer(current.right);
+			if (current.left != null) queue.offer(current.left);
 		}
 
-		reBalanceTraverseHelper(node.right, removed);
-		if (node.right != null) {
-			removed.add(node.right);
-			node.right = null;
-		}
+		return removed;
 	}
 
 	private Node findParentOf(Object target, Node node) {

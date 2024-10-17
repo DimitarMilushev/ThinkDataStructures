@@ -1,13 +1,8 @@
 package com.allendowney.thinkdast;
 
 import java.io.IOException;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 
 import org.jsoup.select.Elements;
 
@@ -70,6 +65,30 @@ public class JedisIndex {
 		jedis.sadd(urlSetKey(term), tc.getLabel());
 	}
 
+	public void add(String term, TermCounter tc, Transaction transaction) {
+		transaction.sadd(urlSetKey(term), tc.getLabel());
+	}
+
+	/**
+	 * Updates the count of term for a URL.
+	 * If it doesn't exist, it creates a new record.
+	 *
+	 */
+	public void setTermCount(String term, TermCounter tc) {
+		final String key = termCounterKey(tc.getLabel());
+		final String value = tc.get(term).toString();
+
+		jedis.hset(key, term, value);
+	}
+
+	public void setTermCount(String term, TermCounter tc, Transaction transaction) {
+		final String key = termCounterKey(tc.getLabel());
+		final String value = tc.get(term).toString();
+
+		transaction.hset(key, term, value);
+	}
+
+
 	/**
 	 * Looks up a search term and returns a set of URLs.
 	 * 
@@ -77,8 +96,7 @@ public class JedisIndex {
 	 * @return Set of URLs.
 	 */
 	public Set<String> getURLs(String term) {
-        // FILL THIS IN!
-		return null;
+		return jedis.smembers(this.urlSetKey(term));
 	}
 
     /**
@@ -88,20 +106,28 @@ public class JedisIndex {
 	 * @return Map from URL to count.
 	 */
 	public Map<String, Integer> getCounts(String term) {
-        // FILL THIS IN!
-		return null;
+        final Set<String> urls = this.getURLs(term);
+
+		final Map<String, Integer> counts = new HashMap<>();
+		for (String URL : urls) {
+			counts.putIfAbsent(URL, getCount(URL, term));
+		}
+
+		return counts;
 	}
 
     /**
 	 * Returns the number of times the given term appears at the given URL.
 	 * 
-	 * @param url
-	 * @param term
-	 * @return
+	 * @param url The URL at which the term is counted.
+	 * @param term Term to check counts.
+	 * @return Number of occurrences of term.
 	 */
-	public Integer getCount(String url, String term) {
-        // FILL THIS IN!
-		return null;
+	public Integer getCount(String url, String term)  {
+		final String value = jedis.hget(termCounterKey(url), term);
+        if (value == null) return 0;
+
+		return Integer.valueOf(value);
 	}
 
 	/**
@@ -111,7 +137,17 @@ public class JedisIndex {
 	 * @param paragraphs  Collection of elements that should be indexed.
 	 */
 	public void indexPage(String url, Elements paragraphs) {
-		// TODO: FILL THIS IN!
+		// make a TermCounter and count the terms in the paragraphs
+		final TermCounter termCounter = new TermCounter(url);
+		termCounter.processElements(paragraphs);
+
+		// for each term in the TermCounter, add the TermCounter to the index
+		Transaction transaction = jedis.multi();
+		for (String term : termCounter.keySet()) {
+			this.add(term, termCounter, transaction);
+			this.setTermCount(term, termCounter, transaction);
+		}
+		transaction.exec();
 	}
 
 	/**

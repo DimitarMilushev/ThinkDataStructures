@@ -17,7 +17,7 @@ LaTeX source and supporting code for *Think Data Structures: Algorithms and Info
 - [x] 12. TreeMap
 - [x] 13. Binary Search Tree
   - [ ] Bonus. Implement a balanced tree
-- [ ] 14. Persistence
+- [x] 14. Persistence
 - [ ] 15. Crawling Wikipedia
 - [ ] 16. Boolean Search
 - [ ] 17. Sorting

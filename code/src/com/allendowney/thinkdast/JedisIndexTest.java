@@ -4,7 +4,10 @@ import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.jsoup.select.Elements;
 import org.junit.After;
@@ -30,6 +33,10 @@ public class JedisIndexTest {
 	public void setUp() throws Exception {
 		jedis = JedisMaker.make();
 		index = new JedisIndex(jedis);
+
+		index.deleteAllKeys();
+		index.deleteURLSets();
+		index.deleteTermCounters();
 
 		loadIndex(index);
 	}
@@ -60,6 +67,28 @@ public class JedisIndexTest {
 		jedis.close();
 	}
 
+
+	@Test
+	public void testGetUrlsWhenEmpty() {
+		final String[] expected = new String[0];
+
+		final String[] actual = index.getURLs("SOME_RANDM_URL").toArray(String[]::new);
+
+		assertArrayEquals(expected, actual);
+	}
+
+	@Test
+	public void testGetUrls() {
+        final Set<String> expected = new HashSet<>(List.of(new String[]{url1, url2}));
+
+		final Set<String> actuals = index.getURLs("the");
+
+		assertEquals(expected.size(), actuals.size());
+		for (var actual : actuals) {
+			assertTrue(expected.contains(actual));
+		}
+	}
+
 	/**
 	 * Test method for {@link JedisIndex#getCounts(java.lang.String)}.
 	 */
@@ -69,4 +98,15 @@ public class JedisIndexTest {
 		assertThat(map.get(url1), is(339));
 		assertThat(map.get(url2), is(264));
 	}
+
+	@Test
+	public void testGetCountShouldReturnZeroIfTermIsMissing() {
+		final Integer expected = 0;
+
+		final Integer actual = index.getCount(url1, "SOME_RANDOM_STRING_12312123");
+
+		assertEquals(expected, actual);
+	}
+
+
 }
