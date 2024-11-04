@@ -298,12 +298,12 @@ public class JedisIndex {
 		Jedis jedis = JedisMaker.make();
 		JedisIndex index = new JedisIndex(jedis);
 
-		index.deleteTermCounters();
-		index.deleteURLSets();
-		index.deleteAllKeys();
+//		index.deleteTermCounters();
+//		index.deleteURLSets();
+//		index.deleteAllKeys();
 		loadIndex(index);
 
-		Map<String, Integer> map = index.getCountsTransactional("the");
+		Map<String, Integer> map = index.getCountsTransactional("input");
 		for (Entry<String, Integer> entry: map.entrySet()) {
 			System.out.println(entry);
 		}
