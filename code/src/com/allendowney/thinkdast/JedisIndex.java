@@ -3,6 +3,8 @@ package com.allendowney.thinkdast;
 import java.io.IOException;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
 
 import org.jsoup.select.Elements;
 
@@ -106,14 +108,42 @@ public class JedisIndex {
 	 * @return Map from URL to count.
 	 */
 	public Map<String, Integer> getCounts(String term) {
-        final Set<String> urls = this.getURLs(term);
+		return this.getURLs(term).stream().collect(
+				HashMap::new,
+				(map, URL) -> map.putIfAbsent(URL, getCount(URL, term)),
+				Map::putAll
+		);
+	}
 
-		final Map<String, Integer> counts = new HashMap<>();
-		for (String URL : urls) {
-			counts.putIfAbsent(URL, getCount(URL, term));
+	/**
+	 * Optimizes requests to Redis by fetching all counts in a single transaction.
+	 * @return
+	 */
+	public Map<String, Integer> getCountsTransactional(String term) {
+		final List<String> urls = this.getURLs(term).stream().toList();
+		Transaction tr = jedis.multi();
+
+		for (String url : urls) {
+			tr.hget(termCounterKey(url), term);
 		}
 
-		return counts;
+		final List<Object> counts = tr.exec();
+		if (counts.size() != urls.size()) {
+			throw new RuntimeException("Term counts per URL don't match:\nURLs: " + urls.size() + "\nTerm Count: " + counts.size());
+		}
+
+		Map<String, Integer> countsPerUrl = new HashMap<>();
+		int termCount;
+		for (int i = 0; i < counts.size(); i++) {
+			try {
+				termCount = Integer.parseInt((String)counts.get(i));
+			} catch (NumberFormatException ex) {
+				termCount = 0;
+			}
+			countsPerUrl.put(urls.get(i), termCount);
+		}
+
+		return countsPerUrl;
 	}
 
     /**
@@ -136,9 +166,9 @@ public class JedisIndex {
 	 * @param url         URL of the page.
 	 * @param paragraphs  Collection of elements that should be indexed.
 	 */
-	public void indexPage(String url, Elements paragraphs) {
+	public void indexPage(String url, Elements paragraphs) throws IOException {
 		// make a TermCounter and count the terms in the paragraphs
-		final TermCounter termCounter = new TermCounter(url);
+		final TermCounter termCounter = new OptimizedTermCounter(url);
 		termCounter.processElements(paragraphs);
 
 		// for each term in the TermCounter, add the TermCounter to the index
@@ -268,12 +298,12 @@ public class JedisIndex {
 		Jedis jedis = JedisMaker.make();
 		JedisIndex index = new JedisIndex(jedis);
 
-		//index.deleteTermCounters();
-		//index.deleteURLSets();
-		//index.deleteAllKeys();
+		index.deleteTermCounters();
+		index.deleteURLSets();
+		index.deleteAllKeys();
 		loadIndex(index);
 
-		Map<String, Integer> map = index.getCounts("the");
+		Map<String, Integer> map = index.getCountsTransactional("the");
 		for (Entry<String, Integer> entry: map.entrySet()) {
 			System.out.println(entry);
 		}

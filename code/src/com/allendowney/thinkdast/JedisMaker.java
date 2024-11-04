@@ -9,6 +9,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 
 import redis.clients.jedis.Jedis;
 
@@ -27,7 +28,7 @@ public class JedisMaker {
 		String slash = File.separator;
 		String filename = "resources" + slash + "redis_url.txt";
 		URL fileURL = JedisMaker.class.getClassLoader().getResource(filename);
-		String filepath = URLDecoder.decode(fileURL.getFile(), "UTF-8");
+		String filepath = URLDecoder.decode(fileURL.getFile(), StandardCharsets.UTF_8);
 		
 		// open the file
 		StringBuilder sb = new StringBuilder();
