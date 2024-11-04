@@ -4,9 +4,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.StringTokenizer;
+
+import java.util.*;
 
 /**
  * 
@@ -32,6 +31,41 @@ public class WikiParser {
 	public WikiParser(Elements paragraphs) {
 		this.paragraphs = paragraphs;
 		this.openedParenthesis = 0;
+	}
+
+	public List<Element> findAllInternalLinks() {
+		List<Element> internalLinks = new ArrayList<>();
+
+		for (Element elt : this.paragraphs) {
+			Iterable<Node> wikiNode = new WikiNodeIterable(elt);
+
+			for (Node n : wikiNode) {
+				if (n instanceof TextNode) continue;
+
+				if (this.validInternal((Element) n)) {
+					internalLinks.add((Element) n);
+				}
+			}
+		}
+
+		return internalLinks;
+//		return paragraphs
+//				.stream()
+//				.flatMap(x -> x.children().stream())
+//				.filter(this::validInternal)
+//				.toList();
+	}
+
+	private boolean validInternal(Element elt) {
+		if (!elt.tagName().equals("a")) {
+			return false;
+		}
+		// is external origin
+		if (!startsWith(elt, "/wiki/")) {
+			return false;
+		}
+
+		return true;
 	}
 	
 	/**

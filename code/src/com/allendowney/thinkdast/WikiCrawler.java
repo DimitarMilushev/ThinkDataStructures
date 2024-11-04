@@ -2,10 +2,12 @@ package com.allendowney.thinkdast;
 
 import java.io.IOException;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Queue;
 
+import com.allendowney.thinkdast.constants.WikiConstants;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
@@ -55,8 +57,17 @@ public class WikiCrawler {
 	 * @throws IOException
 	 */
 	public String crawl(boolean testing) throws IOException {
-		// TODO: FILL THIS IN!
-        return null;
+		if (queue.isEmpty()) return null;
+
+		final String url = queue.poll();
+		if (index.isIndexed(url) && !testing) return null;
+
+		final var el = wf.readWikipedia(url);
+		index.indexPage(url, el);
+
+		queueInternalLinks(el);
+
+        return url;
 	}
 
 	/**
@@ -66,7 +77,11 @@ public class WikiCrawler {
 	 */
 	// NOTE: absence of access level modifier means package-level
 	void queueInternalLinks(Elements paragraphs) {
-        // TODO: FILL THIS IN!
+        final WikiParser parser = new WikiParser(paragraphs);
+
+		for (Element link : parser.findAllInternalLinks()) {
+			this.queue.offer(WikiConstants.WIKI_ORIGIN_EN + link.attr("href"));
+		}
 	}
 
 	public static void main(String[] args) throws IOException {
@@ -86,7 +101,7 @@ public class WikiCrawler {
 			res = wc.crawl(false);
 
             // REMOVE THIS BREAK STATEMENT WHEN crawl() IS WORKING
-            break;
+//            break;
 		} while (res == null);
 		
 		Map<String, Integer> map = index.getCounts("the");

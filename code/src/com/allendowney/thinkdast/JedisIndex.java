@@ -3,8 +3,6 @@ package com.allendowney.thinkdast;
 import java.io.IOException;
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.function.BiConsumer;
-import java.util.stream.Collectors;
 
 import org.jsoup.select.Elements;
 
@@ -167,9 +165,8 @@ public class JedisIndex {
 	 * @param paragraphs  Collection of elements that should be indexed.
 	 */
 	public void indexPage(String url, Elements paragraphs) throws IOException {
-		if (isIndexed(url)) return;
 		// make a TermCounter and count the terms in the paragraphs
-		final TermCounter termCounter = new OptimizedTermCounter(url);
+		final TermCounter termCounter = new TermCounter(url);
 		termCounter.processElements(paragraphs);
 
 		// for each term in the TermCounter, add the TermCounter to the index
