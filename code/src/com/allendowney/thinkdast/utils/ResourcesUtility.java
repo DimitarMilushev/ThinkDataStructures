@@ -14,10 +14,9 @@ import java.nio.file.Path;
 import java.util.Arrays;
 
 public class ResourcesUtility {
-    private static final String srcPath = String.join(File.separator, System.getProperty("user.dir"),  "src");
-    public void ensureWikiDir() throws IOException {
-        final Path srcPath = Path.of(ResourcesUtility.srcPath);
-        final Path wikiPath = Path.of(srcPath +File.separator + ResourcesConstants.WIKI_PATH);
+    private static final String SOURCE_PATH = "src";
+    public void ensureWikiDir() {
+        final Path wikiPath = Path.of(String.join(File.separator, SOURCE_PATH, ResourcesConstants.WIKI_PATH));
 
         if (wikiPath.toFile().mkdirs()) {
             System.out.println(wikiPath + " created.");
@@ -28,8 +27,15 @@ public class ResourcesUtility {
         ensureWikiDir();
 
         final String pageName = this.getWikiPageFileNameFromURL(new URL(page.location()));
-        final String dest = ResourcesUtility.srcPath + File.separator + ResourcesConstants.WIKI_PATH + File.separator + pageName;
-        final File file = Files.createFile(Path.of(dest)).toFile();
+        final String dest = String.join(File.separator, SOURCE_PATH, ResourcesConstants.WIKI_PATH, pageName);
+
+        final Path filePath = Path.of(dest);
+        if (Files.exists(filePath)) {
+            System.out.println(pageName + " already exists.\nSkipping...");
+            return;
+        }
+
+        final File file = Files.createFile(filePath).toFile();
 
         try (FileWriter fw = new FileWriter(file)) {
             fw.write(page.html());
