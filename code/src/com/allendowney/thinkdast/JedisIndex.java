@@ -167,6 +167,7 @@ public class JedisIndex {
 	 * @param paragraphs  Collection of elements that should be indexed.
 	 */
 	public void indexPage(String url, Elements paragraphs) throws IOException {
+		if (isIndexed(url)) return;
 		// make a TermCounter and count the terms in the paragraphs
 		final TermCounter termCounter = new OptimizedTermCounter(url);
 		termCounter.processElements(paragraphs);
